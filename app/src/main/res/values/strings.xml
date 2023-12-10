@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RegistroCucaJulia</string>
+    <string name="first_fragment_label">Texto de etiqueta para el primer fragmento</string>
+    <string name="second_fragment_label">registrocucajulia</string>
+    <string name="Titulopagos">PAGO POR HORA</string>
+    <string name="pagomiercoles">Miercoles:</string>
+    <string name="Titulonombre">Nombre:</string>
+    <string name="Titulosemana">Semana:</string>
+    <string name="tituloagregarempleado">AGREGAR EMPLEADO</string>
+    <string name="Pagojueves">Jueves:</string>
+    <string name="pagoviernes">Viernes:</string>
+    <string name="Pagosabado">Sabado:</string>
+    <string name="pagodomingo">Domingo:</string>
+    <string name="pagolunes">Lunes:</string>
+    <string name="pagohoraextra">Hora extra:</string>
+    <string name="titulomodificarempleado">MODIFICAR EMPLEADO</string>
+    <string name="tituloid">ID:</string>
+    <string name="tituloadmin">Administrador</string>
+    <string name="titulohorario">Tabla de registros</string>
+    <string name="titulototal">Pago semanal:</string>
+</resources>
