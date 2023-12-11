@@ -5,26 +5,33 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.EditText
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class Verhorario : AppCompatActivity() {
-    @SuppressLint("MissingInflatedId")
+
+    lateinit var txtbuscarporsemana: EditText
+    lateinit var adaptador: Adaptador // Declarar el adaptador como propiedad de la clase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_verhorario)
+
+        txtbuscarporsemana = findViewById(R.id.txtbuscarporsemana)
 
         // Suponiendo que tienes acceso al ID del empleado que deseas mostrar
         //val idEmpleado: Long = obtenerIdEmpleado() // Reemplaza esto con la lógica para obtener el ID del empleado
         val idEmpleado: Long = intent.getLongExtra("ID_EMPLEADO", -1)
 
         val listaEmpleados: LiveData<List<empleadoentity>> = obtenerListaEmpleados()
-        val listaAsistencias: LiveData<List<Asistencia>> = obtenerListaAsistencias(idEmpleado)
+        val listaAsistencias: LiveData<List<Asistencia>> = obtenerListaAsistencias(idEmpleado, "")
         val listaPagos: LiveData<List<Pago>> = obtenerListaPagos(idEmpleado)
 
-        val adaptador = Adaptador(listaEmpleados, listaAsistencias, listaPagos)
-        val recyclerView = findViewById<RecyclerView>(R.id.rvMostrardatos) // Cambia el ID según tu archivo de diseño XML
+        adaptador = Adaptador(listaEmpleados, listaAsistencias, listaPagos) // Inicializar el adaptador
+
+        val recyclerView = findViewById<RecyclerView>(R.id.rvMostrardatos)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adaptador
 
@@ -35,11 +42,9 @@ class Verhorario : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val fechaIngresada = s?.toString()
-                if (!fechaIngresada.isNullOrBlank()) {
-                    // Actualizar la lista de asistencias cuando se ingresa una fecha
-                    actualizarListaAsistencias(fechaIngresada)
-                }
+                val fechaIngresada = s?.toString() ?: ""
+                // Actualizar la lista de asistencias cuando se ingresa una fecha
+                actualizarListaAsistencias(idEmpleado, fechaIngresada)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -49,15 +54,15 @@ class Verhorario : AppCompatActivity() {
     }
 
     // Funciones para obtener listas de empleados, asistencias y pagos
-    // Ajusta estas funciones según tu lógica de obtención de datos
     private fun obtenerListaEmpleados(): LiveData<List<empleadoentity>> {
         val daoEmpleado = DataBase.getInstance(applicationContext).empleadoDao()
         return daoEmpleado.getEmpleadosActivosLiveData()
     }
 
-    private fun actualizarListaAsistencias(fecha: String) {
+    private fun actualizarListaAsistencias(idEmpleado: Long, fecha: String) {
         val listaAsistencias: LiveData<List<Asistencia>> = obtenerListaAsistencias(idEmpleado, fecha)
-        listaAsistencias.observe(this, { asistencias ->adaptador.actualizarListaAsistencias(asistencias)
+        listaAsistencias.observe(this, { asistencias ->
+            adaptador.actualizarListaAsistencias(asistencias)
         })
     }
 

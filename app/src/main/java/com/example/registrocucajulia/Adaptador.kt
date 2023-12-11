@@ -6,16 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import java.time.Duration
 import java.time.LocalTime
 
 class Adaptador(private val listaEmpleados: LiveData<List<empleadoentity>>,
-                private val listaAsistencias: LiveData<List<Asistencia>>,
+                private var listaAsistencias: LiveData<List<Asistencia>>,
                 private val listaPagos: LiveData<List<Pago>>
 ) :
     RecyclerView.Adapter<Adaptador.ViewHolder>() {
 
+    fun actualizarListaAsistencias(asistencias: List<Asistencia>) {
+        val nuevaListaAsistencias = MutableLiveData<List<Asistencia>>()
+        nuevaListaAsistencias.value = asistencias
+        this.listaAsistencias = nuevaListaAsistencias
+        notifyDataSetChanged()
+    }
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // Referencias a los TextView en itemview.xml
         //TextView para el nombre del mismo empleado
@@ -138,6 +145,7 @@ class Adaptador(private val listaEmpleados: LiveData<List<empleadoentity>>,
         holder.txtPagoTotal.text = pagoTotal.toString()
     }
 
+
     override fun getItemCount(): Int {
         return listaEmpleados.value?.size ?: 0
     }
@@ -167,10 +175,7 @@ class Adaptador(private val listaEmpleados: LiveData<List<empleadoentity>>,
         return pago.MontoPago
     }
 
-    fun actualizarListaAsistencias(asistencias: List<Asistencia>) {
-        this.listaAsistencias.value = asistencias
-        notifyDataSetChanged()
-    }
+
 }
 
 private fun <T> LiveData<T>.filter(function: () -> Boolean): Any {
