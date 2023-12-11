@@ -9,11 +9,13 @@ import android.widget.EditText
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class Verhorario : AppCompatActivity() {
 
     lateinit var txtbuscarporsemana: EditText
     lateinit var adaptador: Adaptador // Declarar el adaptador como propiedad de la clase
+    var idEmpleado: Long = -1 // Inicializar idEmpleado
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,9 +23,14 @@ class Verhorario : AppCompatActivity() {
 
         txtbuscarporsemana = findViewById(R.id.txtbuscarporsemana)
 
+        val btnBuscarPorFecha = findViewById<FloatingActionButton>(R.id.btnbuscarporfecha)
+        btnBuscarPorFecha.setOnClickListener {
+            val fechaIngresada = txtbuscarporsemana.text.toString()
+            actualizarListaAsistencias(idEmpleado, fechaIngresada)
+        }
+
         // Suponiendo que tienes acceso al ID del empleado que deseas mostrar
-        //val idEmpleado: Long = obtenerIdEmpleado() // Reemplaza esto con la lógica para obtener el ID del empleado
-        val idEmpleado: Long = intent.getLongExtra("ID_EMPLEADO", -1)
+        idEmpleado = intent.getLongExtra("ID_EMPLEADO", -1)
 
         val listaEmpleados: LiveData<List<empleadoentity>> = obtenerListaEmpleados()
         val listaAsistencias: LiveData<List<Asistencia>> = obtenerListaAsistencias(idEmpleado, "")

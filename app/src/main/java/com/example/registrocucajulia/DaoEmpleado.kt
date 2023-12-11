@@ -46,7 +46,7 @@ interface DaoAsistencia {
     @Query("SELECT * FROM asistencias WHERE IDEmpleado = :idEmpleado")
     fun getAllAsistenciasLiveData(idEmpleado: Long): LiveData<List<Asistencia>>
 
-    @Query("SELECT * FROM asistencias WHERE IDEmpleado = :idEmpleado AND Fecha >= :fecha")
+    @Query("SELECT * FROM asistencias WHERE IDEmpleado = :idEmpleado AND Fecha = :fecha")
     fun getAsistenciasPorEmpleadoYFecha(idEmpleado: Long, fecha: String): LiveData<List<Asistencia>>
 }
 
@@ -66,5 +66,4 @@ interface DaoPago {
 
     @Query("SELECT * FROM pagos WHERE idEmpleado = :idEmpleado")
     fun getPagosByIdEmpleado(idEmpleado: Long): List<Pago>
-
 }

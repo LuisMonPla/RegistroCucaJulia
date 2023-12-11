@@ -16,6 +16,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.sql.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,11 +74,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 GlobalScope.launch(Dispatchers.IO) {
                     // Verificar si el empleado existe
-                    //val empleadoExistente = empleadoDao.getEmpleadoById(idEmpleado)
                     val empleadoExistente = db.empleadoDao().getEmpleadoByIdLiveData(idEmpleado.toLong())
 
                     if (empleadoExistente != null) {
-                        val calendario = Calendar.getInstance().timeInMillis
+                        val calendario = obtenerFechaActualEnMilisegundos()
                         val fecha = obtenerNombreDia(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
                         val horaEntrada = Calendar.getInstance().timeInMillis
 
@@ -150,4 +152,20 @@ class MainActivity : AppCompatActivity() {
             else -> ""
         }
     }
+
+    private fun Long.formatearComoFecha(): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = Date(this)
+        return sdf.format(date)
+    }
+
+    private fun obtenerFechaActualEnMilisegundos(): Long {
+        val cal = Calendar.getInstance()
+        val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val fechaString = formato.format(cal.time)
+        val fecha = formato.parse(fechaString)
+        return fecha?.time ?: 0L
+    }
+
+
 }
