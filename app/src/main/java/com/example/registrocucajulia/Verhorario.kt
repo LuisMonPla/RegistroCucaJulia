@@ -1,10 +1,12 @@
 package com.example.registrocucajulia
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +43,12 @@ class Verhorario : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.rvMostrardatos)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adaptador
+
+        val btnvolvera3: Button = findViewById(R.id.btnvolvera3)
+        btnvolvera3.setOnClickListener {
+            val intent = Intent(this, Menuopciones::class.java)
+            startActivity(intent)
+        }
 
         // Agregar TextWatcher al EditText
         txtbuscarporsemana.addTextChangedListener(object : TextWatcher {
