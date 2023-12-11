@@ -4,14 +4,24 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
+import androidx.core.content.FileProvider
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.itextpdf.text.Document
+import com.itextpdf.text.Paragraph
+import com.itextpdf.text.pdf.PdfPCell
+import com.itextpdf.text.pdf.PdfPTable
+import com.itextpdf.text.pdf.PdfWriter
+import java.io.File
+import java.io.FileOutputStream
+import com.google.android.datatransport.BuildConfig
 
 class Verhorario : AppCompatActivity() {
 
@@ -50,6 +60,15 @@ class Verhorario : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val btnCompartir = findViewById<FloatingActionButton>(R.id.btncompartir)
+        btnCompartir.setOnClickListener {
+            val listaAsistencias: LiveData<List<Asistencia>> = obtenerListaAsistencias(idEmpleado, "")
+            listaAsistencias.observe(this, { asistencias ->
+                val filePath = generarPDF(asistencias)
+                compartirPDF(filePath)
+            })
+        }
+
         // Agregar TextWatcher al EditText
         txtbuscarporsemana.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -66,6 +85,59 @@ class Verhorario : AppCompatActivity() {
                 // No es necesario hacer algo aquí
             }
         })
+    }
+
+    private fun generarPDF(datos: List<Asistencia>): String {
+        val document = Document()
+        val fileName = "reporte_asistencias.pdf"
+        val filePath = "${getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)}/$fileName"
+
+        try {
+            PdfWriter.getInstance(document, FileOutputStream(filePath))
+            document.open()
+
+            // Crear una tabla para organizar los datos
+            val table = PdfPTable(4) // Ajusta el número de columnas según tus necesidades
+            val cell = PdfPCell(Paragraph("Reporte de Asistencias"))
+            cell.colspan = 4
+            cell.horizontalAlignment = PdfPCell.ALIGN_CENTER
+            table.addCell(cell)
+
+            // Encabezados de columna
+            table.addCell("ID")
+            table.addCell("Fecha")
+            table.addCell("Hora Entrada")
+            table.addCell("Hora Salida")
+
+            // Agregar datos a la tabla
+            for (asistencia in datos) {
+                table.addCell(asistencia.ID.toString())
+                table.addCell(asistencia.Fecha)
+                table.addCell(asistencia.HoraEntrada.toString())
+                table.addCell(asistencia.HoraSalida.toString())
+            }
+
+            // Agregar la tabla al documento
+            document.add(table)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            document.close()
+        }
+
+        return filePath
+    }
+
+    private fun compartirPDF(filePath: String) {
+        val uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", File(filePath))
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "application/pdf"
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        startActivity(Intent.createChooser(intent, "Compartir PDF"))
     }
 
     // Funciones para obtener listas de empleados, asistencias y pagos

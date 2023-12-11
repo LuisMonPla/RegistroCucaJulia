@@ -45,6 +45,7 @@ dependencies {
     //classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21") // Asegúrate de tener la versión adecuada para Kotlin
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
     implementation("com.google.mlkit:vision-common:17.3.0")
+    implementation("androidx.compose.ui:ui-text-android:1.5.4")
     val room_version = "2.6.0"
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
@@ -56,6 +57,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation("com.itextpdf:itextg:5.5.10")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

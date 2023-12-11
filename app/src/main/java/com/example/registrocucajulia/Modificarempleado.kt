@@ -102,6 +102,7 @@ class Modificarempleado : AppCompatActivity() {
 
                     // Muestra un mensaje de éxito
                     Toast.makeText(this, "Empleado actualizado con éxito", Toast.LENGTH_SHORT).show()
+
                 } else {
                     // Muestra un mensaje de error si el empleado no existe
                     Toast.makeText(this, "El empleado no existe en la base de datos", Toast.LENGTH_SHORT).show()
